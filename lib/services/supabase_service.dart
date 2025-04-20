@@ -5,11 +5,18 @@ class SupabaseService {
   final _client = Supabase.instance.client;
 
   Future<List<Task>> fetchTasks() async {
-    final response = await _client.from('tasks').select().order('id', ascending: false);
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+
+    final response = await _client
+        .from('tasks')
+        .select()
+        .eq('user_id', userId.toString())  // Filter tasks by the current user's ID
+        .order('id', ascending: false);
     return response.map((t) => Task.fromMap(t)).toList();
   }
-  final userId = Supabase.instance.client.auth.currentUser!.id;
   Future<void> addTask(String title, String detail) async {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+
     await _client.from('tasks').insert({'title': title,'detail': detail, 'completed': false,'user_id': userId,});
   }
   Future<void> updateTask(int taskId, String newTitle, String newDetail) async {

@@ -72,7 +72,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 showSnackbar("Both title and details are required.");
                 return;
               }
-
               try {
                 await Provider.of<TaskProvider>(context, listen: false)
                     .updateTask(task.id, newTitle, newDetail);
@@ -80,7 +79,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 showSnackbar("Task Updated Successfully");
               } catch (e) {
                 Navigator.pop(context);
-                showSnackbar("Failed : "+e.toString() );
+                showSnackbar("Failed_1 : "+e.toString() );
               }
             },
             child: const Text("Update", style: TextStyle(color: Colors.black)),
@@ -331,7 +330,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
           ),
           IconButton(
-            onPressed: () => auth.signOut(),
+            onPressed: () {
+              Provider.of<TaskProvider>(context, listen: false).clearTasks();
+              auth.signOut();
+            },
             icon: Icon(Icons.logout, color: Colors.white),
           ),
         ],
@@ -439,6 +441,7 @@ class TaskProvider with ChangeNotifier {
   final SupabaseService service = SupabaseService();
   List<Task> _tasks = [];
 
+
   List<Task> get tasks => _tasks;
 
   Future<void> loadTasks() async {
@@ -464,5 +467,9 @@ class TaskProvider with ChangeNotifier {
   Future<void> deleteTask(int taskId) async {
     await service.deleteTask(taskId);
     await loadTasks(); // Reload tasks after deleting
+  }
+  void clearTasks() {
+    _tasks.clear();
+    notifyListeners();
   }
 }
