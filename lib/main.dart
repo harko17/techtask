@@ -11,8 +11,8 @@ import 'app/theme_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url: 'https://zvphhgdtwqsugltshhzb.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2cGhoZ2R0d3FzdWdsdHNoaHpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUwNTk1MTgsImV4cCI6MjA2MDYzNTUxOH0.BGTLAHXlGjZIJ532o41YDSBYL0MHuJsp_WATvTUcslg',
+    url: 'YOUR_SUPABASE_PROJECT_LINK',
+    anonKey: 'YOUR_API_KEY',
   );
 
   runApp(
