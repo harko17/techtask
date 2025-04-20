@@ -15,7 +15,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Load tasks when the screen is initialized
     Provider.of<TaskProvider>(context, listen: false).loadTasks();
   }
   void showEditDialog(BuildContext context, Task task) {
@@ -78,8 +77,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 await Provider.of<TaskProvider>(context, listen: false)
                     .updateTask(task.id, newTitle, newDetail);
                 Navigator.pop(context);
+                showSnackbar("Task Updated Successfully");
               } catch (e) {
-                showSnackbar("Failed to update task: ${e.toString()}");
+                Navigator.pop(context);
+                showSnackbar("Failed : "+e.toString() );
               }
             },
             child: const Text("Update", style: TextStyle(color: Colors.black)),

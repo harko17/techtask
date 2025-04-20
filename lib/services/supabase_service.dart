@@ -13,21 +13,29 @@ class SupabaseService {
     await _client.from('tasks').insert({'title': title,'detail': detail, 'completed': false,'user_id': userId,});
   }
   Future<void> updateTask(int taskId, String newTitle, String newDetail) async {
-    final userId = Supabase.instance.client.auth.currentUser!.id;
+    final userId = Supabase.instance.client.auth.currentUser?.id;
 
-    final response = await _client
+    if (userId == null) {
+      throw Exception('User is not authenticated');
+    }
+  print(taskId.toString()+" "+userId.toString());
+    final response = await Supabase.instance.client
         .from('tasks')
         .update({
       'title': newTitle,
       'detail': newDetail,
     })
         .eq('id', taskId)
-        .eq('user_id', userId); // ensures only the current user's task is updated
+        .eq('user_id', userId)
+        .select(); // Important: add .select() to get updated rows
 
-    if (response.error != null) {
-      throw Exception('Failed to update task: ${response.error!.message}');
+    if (response.isEmpty) {
+      throw Exception('No task found or not authorized to update');
     }
+
+    print('Task updated: $response');
   }
+
 
   Future<void> deleteTask(int id) async {
     await _client.from('tasks').delete().eq('id', id);
